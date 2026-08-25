@@ -161,13 +161,28 @@ Publishing uses npm [trusted publishing](https://docs.npmjs.com/trusted-publishe
 over OIDC, so this repo holds no `NPM_TOKEN` — nothing to leak, nothing to
 rotate. It has one bootstrap wrinkle: npm will not let you configure a trusted
 publisher for a package that does not exist yet, and the workflow cannot create
-the package without one. So the very first publish is manual:
+the package without one. So the very first publish is manual.
+
+**Enable 2FA on the npm account first.** This is not optional and it is not
+only about the manual publish: npm requires an interactive 2FA challenge to
+change trusted publishing configuration, so an account without 2FA cannot set
+up the OIDC publisher at all. A fresh npm account has 2FA disabled, and the
+failure it produces names a granular access token as the alternative — ignore
+that. npm is
+[retiring direct publish from 2FA-bypass tokens](https://github.blog/changelog/2026-07-31-restricting-npm-bypass-2fa-granular-access-tokens/)
+and points at trusted publishing instead, which is where this repo already is.
 
 ```bash
+npm profile get                       # two-factor auth: should not say disabled
+npm profile enable-2fa auth-and-writes
 npm login
 pnpm install && pnpm test && pnpm check:deps && pnpm smoke
-npm publish            # 0.1.0
+npm publish --otp=<code>              # 0.1.0
 ```
+
+The OTP is only ever needed for this bootstrap. Once the trusted publisher is
+configured, CI authenticates over OIDC and no one types a code to ship a
+release.
 
 Then, on npmjs.com → the package → Settings → Trusted Publisher, add a GitHub
 Actions publisher with organization/user `ch0rch`, repository `seodraft`,
