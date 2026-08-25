@@ -2,13 +2,14 @@
 
 ## Positioning
 
-**Outrank for your repo, powered by the agent you already pay for.** Seodraft
-Local is a local-first SEO/AEO content engine distributed as an npm package.
-`npx seodraft install` drops an agent skill plus a set of deterministic Node
-scripts into the AI harness the user already runs — Claude Code, Codex, Cursor,
-Gemini CLI, or OpenCode. The client's own agent is the LLM: no model API keys
-ship with the product, no cloud backend holds the content, and every artifact
-(state, keywords, calendar, articles) is a file in the client's own git repo.
+**An SEO/AEO content engine that lives in your repo, powered by the agent you
+already pay for.** Seodraft Local is a local-first content engine distributed
+as an npm package. `npx seodraft install` drops an agent skill plus a set of
+deterministic Node scripts into the AI harness the user already runs — Claude
+Code, Codex, Cursor, Gemini CLI, or OpenCode. The client's own agent is the
+LLM: no model API keys ship with the product, no cloud backend holds the
+content, and every artifact (state, keywords, calendar, articles) is a file in
+the client's own git repo.
 The workflow follows the blogEO philosophy: **the agent proposes, deterministic
 code gates, the human approves.**
 
