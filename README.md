@@ -37,20 +37,31 @@ article, forever. Everything that needs taste stays with you and your agent.
 
 ## Install
 
-Not published to npm yet. Install from source:
+From your content repo:
 
 ```bash
-git clone https://github.com/ch0rch/seodraft.git
-cd seodraft && pnpm install
-
-# then, from your content repo:
-node /path/to/seodraft/bin/seodraft.mjs install
+npx seodraft@latest install
 ```
 
 `install` detects which harness folders exist (`.claude`, `.agents`, `.cursor`,
 `.gemini`, `.opencode`), asks you to confirm, and copies the skill in. Pass
 `--providers=claude,cursor` to skip the prompt, or `--scope=global` to install
-into `~` instead of the project. `update` re-copies over an existing install.
+into `~` instead of the project. `update` re-copies over an existing install —
+run it after bumping the package.
+
+Installing globally works too, and gives you the CLI on `PATH` for CI use:
+
+```bash
+npm install -g seodraft
+```
+
+To run from source instead:
+
+```bash
+git clone https://github.com/ch0rch/seodraft.git
+cd seodraft && pnpm install
+node /path/to/seodraft/bin/seodraft.mjs install   # from your content repo
+```
 
 Then open your agent in your content repo and run `/seodraft init`.
 
@@ -182,8 +193,9 @@ it mechanically.
 
 ```bash
 pnpm install
-pnpm test                                  # 75 tests, 9 suites
-node scripts/check-no-runtime-deps.mjs     # the dependency guard
+pnpm test                # 75 tests, 9 suites
+pnpm check:deps          # the dependency guard
+pnpm smoke               # packs the tarball, installs it, runs it
 ```
 
 There is no build step: `skill/` is the product and the installer copies it.

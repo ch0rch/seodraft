@@ -62,3 +62,10 @@ jobs:
             src/content/blog/deterministic-seo-gates.mdx \
             --term "deterministic seo gates" > /dev/null
           echo "ok: the installed skill runs with no dependencies"
+
+      # The step above proves the checkout works. This one proves the artifact
+      # users actually download works, which is a different claim: the tarball's
+      # contents come from the `files` field, and the test suite imports from
+      # the checkout either way.
+      - name: the packed tarball installs and runs
+        run: node scripts/smoke-tarball.mjs

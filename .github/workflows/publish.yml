@@ -1,0 +1,62 @@
+name: Publish
+
+# Releases are tag-driven: `git tag v0.1.1 && git push --tags`. Nothing
+# publishes from a branch push, and nothing publishes by hand from a laptop.
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  # Trusted publishing (OIDC): npm mints a short-lived token for this exact
+  # workflow, so the repo holds no long-lived NPM_TOKEN to leak or rotate.
+  id-token: write
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    name: publish to npm
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          # `cache` is deliberately unset: a release artifact comes from this
+          # commit, never from what a previous run left in a cache.
+
+      # Trusted publishing needs npm >= 11.5.1; the bundled version tracks Node
+      # and is not guaranteed to clear that floor.
+      - run: npm install -g npm@latest
+
+      # A tag that disagrees with package.json publishes the wrong version
+      # under the right name, which cannot be undone after 72 hours.
+      - name: tag matches package.json version
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF_NAME#v}"
+          pkg="$(npm pkg get version | tr -d '"')"
+          if [ "$tag" != "$pkg" ]; then
+            echo "tag ${GITHUB_REF_NAME} does not match package.json version ${pkg}" >&2
+            exit 1
+          fi
+          echo "releasing ${pkg}"
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm test
+
+      - run: pnpm check:deps
+
+      # Proves the artifact about to be uploaded actually installs and runs.
+      - run: pnpm smoke
+
+      # OIDC is detected automatically, and it carries the provenance
+      # attestation with it.
+      - run: npm publish

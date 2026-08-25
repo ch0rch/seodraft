@@ -129,6 +129,64 @@ the relevant `reference/*.md` and in `README.md` in the same PR.
 - CI runs the suite on every PR against the Node versions the package claims to
   support. It has to be green.
 
+## Releasing (maintainers)
+
+Releases are tag-driven. `.github/workflows/publish.yml` publishes to npm on
+any `v*` tag and refuses to run from a branch, so there is no such thing as a
+release someone did from their laptop and forgot to push.
+
+Cutting one:
+
+1. Update `CHANGELOG.md`: retitle the `unreleased` section with the version and
+   today's date.
+2. `npm version patch|minor|major` — bumps `package.json` and commits.
+3. `git push && git push --tags`.
+
+The workflow then refuses to publish unless the tag matches `package.json`,
+runs the suite, the dependency guard and `pnpm smoke`, and only then publishes.
+`pnpm smoke` is the one that matters here: it packs the tarball, installs it
+into a throwaway prefix and runs the installed skill against a copy of the
+fixture. The test suite imports from the checkout, so it cannot see a `files`
+field that forgot to ship `src/` — and that mistake produces a package that
+installs cleanly and then does nothing.
+
+Semver on this package is about the contract, not the code: the CLI commands,
+the `.seodraft/` schemas, and the gate and audit **rule names**. Renaming a
+rule or promoting an advisory to an error breaks somebody's CI exit code, so it
+is a major — that is the whole point of the gate being deterministic.
+
+### One-time setup: trusted publishing
+
+Publishing uses npm [trusted publishing](https://docs.npmjs.com/trusted-publishers/)
+over OIDC, so this repo holds no `NPM_TOKEN` — nothing to leak, nothing to
+rotate. It has one bootstrap wrinkle: npm will not let you configure a trusted
+publisher for a package that does not exist yet, and the workflow cannot create
+the package without one. So the very first publish is manual:
+
+```bash
+npm login
+pnpm install && pnpm test && pnpm check:deps && pnpm smoke
+npm publish            # 0.1.0
+```
+
+Then, on npmjs.com → the package → Settings → Trusted Publisher, add a GitHub
+Actions publisher with organization/user `ch0rch`, repository `seodraft`,
+workflow filename `publish.yml`, and no environment. Every release after that
+goes through the workflow, and npm attaches a provenance attestation
+automatically because the publish is OIDC-authenticated.
+
+One consequence worth knowing before it surprises you: if you push a `v0.1.0`
+tag after publishing 0.1.0 by hand, the workflow runs and fails, because npm
+refuses to publish a version that already exists. That failure is correct and
+it is left alone on purpose — a release workflow that quietly skips a publish
+it could not perform is a workflow that reports green on a release that never
+happened. Either accept the one red run on the bootstrap tag, or start the tag
+convention at the first version the workflow actually publishes.
+
+Once that is in place, revoke any classic npm token with publish rights on this
+package. Leaving one alive keeps the attack surface the OIDC setup was meant to
+remove.
+
 ## Reporting things
 
 - **Bugs**: the issue template asks for your `.seodraft/config.json` (redact
