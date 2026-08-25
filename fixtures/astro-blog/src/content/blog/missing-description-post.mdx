@@ -1,0 +1,25 @@
+---
+title: "What Our First Broken Link Audit Found"
+pubDate: 2030-06-08
+heroImage: "/images/audit.png"
+tags: ["seo", "maintenance"]
+draft: false
+---
+
+We ran our first structured link audit across the blog last month, and the results were humbling. The archive is not large, yet it had accumulated an impressive collection of quiet failures, the kind that never throw an error anywhere a developer would see it. A reader hits them, a crawler hits them, and neither of them files a bug report. This post documents what we found, what we fixed, and which defects turned out to be structural rather than accidental.
+
+## The inventory pass
+
+The first step was mechanical: walk the content directory, parse every file, and build a graph of which post links to which. No judgment, no scoring, just extraction. That pass alone surfaced problems we did not know we had. Several posts referenced slugs that had been renamed during a framework migration two years ago. The old URLs had redirects for a while, then the redirects were cleaned up by someone who reasonably assumed nothing still pointed at them. The posts themselves were never updated, because no tool ever connected the rename to the references.
+
+The graph also showed the opposite failure: posts that nothing links to at all. An orphaned post can still rank, but it receives no internal authority and no reader ever discovers it by browsing. Orphans are not broken in the HTTP sense, which is exactly why they persist. Nothing fails when you create one. The inventory made them visible for the first time, sorted by age, and most of them turned out to be announcements whose moment had passed, which made the cleanup decision easy.
+
+## What the numbers said
+
+Out of every internal reference in the archive, roughly one in twelve pointed at nothing. That numbers is worse than it sounds, because the failures were concentrated: a handful of frequently-linked posts had been renamed, so the same dead target appeared across many source files. Fixing the five most-referenced dead slugs repaired more than half of all broken references in one commit. The long tail was the opposite shape, single stray links in old posts, including one in this very paragraph that points at a [guide we never actually published](/blog/does-not-exist), left in deliberately as a regression canary for the audit tooling.
+
+The deeper lesson was about process, not links. Every broken reference existed because two systems, the router and the content, each changed independently with no check tying them together. The audit is that check now. It runs on every change, it costs nothing, and it turns a class of silent decay into a loud, fixable list. The methodology follows the same philosophy as our [deterministic gate](/blog/deterministic-seo-gates): if a question has a factual answer, a script should be the one asking it.
+
+## What we changed afterward
+
+Renames now require a search across the content directory before they merge, enforced by the same tooling rather than by memory. New posts must resolve every internal reference at gate time, so the graph can only decay through deletions, and deletions now print the list of posts that referenced the deleted slug. None of this is clever. All of it is the kind of boring mechanical diligence that compounds, which is the entire thesis of this blog's tooling series and the reason we keep writing these audits up.

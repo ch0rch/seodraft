@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "siteUrl": "https://example.com",
+  "language": "en",
+  "locationCode": 2840,
+  "framework": "astro",
+  "contentDir": "src/content/blog",
+  "extension": ".mdx",
+  "frontmatter": {
+    "title": "title",
+    "description": "description",
+    "date": "pubDate",
+    "updatedDate": null,
+    "image": "heroImage",
+    "tags": "tags",
+    "draft": "draft",
+    "tldr": null,
+    "faqs": null
+  },
+  "bodyH1": false,
+  "internalLinksMin": 2,
+  "thinContentWords": 500,
+  "titleMax": 60,
+  "descriptionMax": 160,
+  "tldrMin": 100,
+  "tldrMax": 400,
+  "faqsMin": 3,
+  "faqAnswerMax": 500
+}

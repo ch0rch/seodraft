@@ -1,0 +1,11 @@
+node_modules/
+
+# Third-party source material used while designing seodraft: a saved clipping
+# of someone else's article and another product's reference docs. Kept locally
+# for reference, never republished from this repo.
+docs-iniciales/
+
+# Smoke-test leftovers: the installer copies the skill into the fixture and
+# local tooling drops caches there. Neither belongs in the repo.
+fixtures/**/.claude/
+fixtures/**/.atl/

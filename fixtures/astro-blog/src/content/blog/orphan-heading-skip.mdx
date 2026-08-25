@@ -1,0 +1,30 @@
+---
+title: "Notes on Measuring Content Decay"
+description: "Field notes on how we tried to quantify content decay across a small technical blog archive over one year."
+pubDate: 2030-06-15
+heroImage: "/images/decay.png"
+tags: ["seo", "measurement"]
+draft: false
+---
+
+Content decays on a schedule nobody writes down. A tutorial is accurate the day it ships, slightly stale after the next minor release of whatever it documents, and quietly wrong a year later. The text never changes, so nothing in version control signals the rot. These are working notes from a year of trying to measure that decay on a small archive, with all the dead ends left in, because the dead ends are most of the lesson.
+
+## What we tried to measure
+
+The first instinct was to measure freshness by file age, and it failed immediately. Age correlates weakly with accuracy: some three-year-old posts describe concepts that have not moved, while some six-month-old posts reference flags that were renamed a week after publication. Age is a proxy for risk, not a verdict, and treating it as a verdict produces busywork rewrites of posts that were perfectly fine.
+
+![](/images/decay-curve.png)
+
+#### The chart nobody could read
+
+The diagram above was our first attempt at visualizing decay, and it went straight from a section heading to a deeply nested one because the intermediate grouping only existed in the spreadsheet, a structural shortcut this very post preserves as a test specimen. The chart plotted estimated accuracy against release cadence of the documented subject, bucketed by post category. The idea was sound. The execution produced a scatter plot that looked like static, because accuracy was hand-labeled by whoever reviewed the post, and two reviewers rarely agreed on what counted as wrong enough to matter.
+
+## What actually worked
+
+The measurement that survived was embarrassingly simple: for each post, list the external facts it depends on, in the form of version numbers, command names, API endpoints, and default values, and count how many of them a reviewer could verify unchanged in under a minute each. The ratio of verified facts to total facts is crude, but it is repeatable, it is fast, and it points directly at the sentences that need editing rather than at the post as an undifferentiated blob.
+
+Once the dependency list exists, the review becomes mechanical, and mechanical work is delegable. A quarterly pass over the archive now takes an afternoon. Posts with a verification ratio below the threshold get a banner and a slot in the rewrite queue; posts above it get their reviewed date bumped and nothing else. The archive stops pretending everything is equally current, which readers reward with something you can actually see in the engagement numbers on older posts.
+
+## The part we have not solved
+
+Decay detection still depends on a human enumerating the facts a post depends on, and humans skip the facts they consider obvious. The obvious facts are precisely the ones that break silently, because nobody watches them. Automating that enumeration is the open problem for next year, and the honest status is that we do not yet know whether it is tractable at our scale. If it is not, the fallback is more mechanical discipline at writing time, which has been the answer to every other problem in this series, so it would at least be a consistent ending.

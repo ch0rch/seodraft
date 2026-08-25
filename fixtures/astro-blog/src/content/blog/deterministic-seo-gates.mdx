@@ -1,0 +1,28 @@
+---
+title: "Deterministic SEO Gates for Static Blogs"
+description: "How a static blog can block bad posts before merge with deterministic checks instead of another AI review pass."
+pubDate: 2030-06-01
+heroImage: "/images/gates.png"
+tags: ["seo", "automation"]
+draft: false
+---
+
+Every static blog eventually accumulates the same quiet failures: a missing description here, a broken internal link there, two posts that compete for the same query. None of these problems need a model to detect. They are string checks, counters, and set lookups, and the moment you encode them as code they stop recurring. This post walks through the gate we run on every article before it is allowed into the content collection, why each rule earns its place, and what we deliberately keep out of the gate because it is a matter of taste rather than fact.
+
+## Why a gate instead of a review
+
+A reviewer gets tired, a gate does not. When a person reviews a pull request that adds a blog post, they read the prose, and the prose is exactly the part that hides mechanical defects. Nobody counts the characters in a meta description by eye, and nobody checks that every relative link resolves to a real slug while they are thinking about tone. The division of labor that works is the one where software checks everything that has a yes or no answer and people check everything that does not.
+
+The gate runs in milliseconds because it never calls the network. It parses frontmatter, scans the body line by line, and compares what it finds against the thresholds in the project configuration. A post that fails is returned with a list of failures precise enough to fix without guessing. A post that passes is boring in the best possible way: correct metadata, resolvable links, a heading tree without holes.
+
+## The rules that block a merge
+
+The blocking rules are the ones with objective answers. The title must fit inside the pixel budget search engines actually render, which in practice means a hard ceiling on characters. The description must exist and stay inside its own ceiling, because the alternative is letting the crawler pick a random sentence. Internal links must resolve against the set of known slugs, since a link to a renamed post is a silent dead end for both readers and crawlers. Placeholder text is an automatic failure: if the body still carries an unfinished-work marker, the draft simply is not finished, and shipping it would be worse than shipping nothing.
+
+Heading structure is blocking too. Skipping from a section heading straight to a sub-sub-heading breaks outline extraction for screen readers and for answer engines alike, and there is never a good reason for it. See the write-up of our [broken link audit](/blog/missing-description-post) for how often these defects appeared before the gate existed.
+
+## What stays advisory
+
+Word count is advisory because short posts are sometimes exactly right. Title similarity against existing posts is advisory because only a person can say whether two similar titles serve two genuinely different intents or cannibalize each other. The [companion piece on duplicate titles](/blog/thin-content-copy) shows what happens when nobody asks that question. Advisories appear in the report, they just do not block, and that distinction is what keeps the gate trusted: every hard failure is something no one can argue with, so no one argues with the gate.
+
+The result is a pipeline where the expensive judgment happens once, up front, in the rules, instead of on every post forever.

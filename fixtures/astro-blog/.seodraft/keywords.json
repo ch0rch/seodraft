@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "keywords": [
+    {
+      "term": "deterministic seo gates",
+      "volume": 480,
+      "difficulty": 22,
+      "type": "informational",
+      "source": "add",
+      "status": "written",
+      "addedAt": "2030-05-01T10:00:00Z",
+      "articlePath": "src/content/blog/deterministic-seo-gates.mdx"
+    },
+    {
+      "term": "broken links audit",
+      "volume": null,
+      "difficulty": null,
+      "type": "informational",
+      "source": "estimate",
+      "status": "stored",
+      "addedAt": "2030-05-02T10:00:00Z",
+      "articlePath": null
+    }
+  ]
+}

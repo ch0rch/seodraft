@@ -1,0 +1,25 @@
+{
+  "name": "seodraft",
+  "version": "0.1.0",
+  "description": "Local-first SEO/AEO content engine: installs an agent skill + deterministic scripts into your AI coding harness.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "bin": {
+    "seodraft": "bin/seodraft.mjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    "skill",
+    "!**/*.test.mjs"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "vitest": "^3.0.0"
+  }
+}
