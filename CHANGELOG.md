@@ -6,7 +6,7 @@ schemas, and the set of gate and audit rule names — renaming a rule or making
 an advisory into an error is a breaking change, because someone's CI depends on
 the exit code.
 
-## 0.1.0 — unreleased
+## 0.1.0 — 2026-08-25
 
 First release. Everything below is new.
 
@@ -43,3 +43,8 @@ First release. Everything below is new.
   `node:` builtins, enforced mechanically by `scripts/check-no-runtime-deps.mjs`.
 - Node >= 18, tested on 18, 22 and 24.
 - 75 tests across 9 suites.
+- This one version carries **no provenance attestation**, only the registry
+  signature: npm will not let you configure a trusted publisher for a package
+  that does not exist, so 0.1.0 had to be published by hand. Every release from
+  0.1.1 on is published by CI over OIDC and is verifiable against the commit
+  that produced it.
