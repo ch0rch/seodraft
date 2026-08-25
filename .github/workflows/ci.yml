@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # 18 is the floor package.json claims; the rest are current lines.
+        node: [18, 22, 24]
+    name: test (node ${{ matrix.node }})
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm test
+
+  standalone:
+    runs-on: ubuntu-latest
+    name: skill runs standalone, with no dependencies
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      # A third-party import under skill/scripts would break every install,
+      # since those scripts run with no node_modules at all.
+      - run: node scripts/check-no-runtime-deps.mjs
+
+      # Proves the claim end to end: install into a copy of the fixture and
+      # run the scripts from there, in a checkout with no `pnpm install`.
+      - name: install and run from a bare checkout
+        run: |
+          set -euo pipefail
+          repo="$PWD"
+          work="$(mktemp -d)"
+          cp -r fixtures/astro-blog/. "$work/"
+          cd "$work"
+          node "$repo/bin/seodraft.mjs" install --providers=claude --scope=project
+          test -f .claude/skills/seodraft/SKILL.md
+          test ! -e node_modules
+          node .claude/skills/seodraft/scripts/state.mjs validate
+          node .claude/skills/seodraft/scripts/audit.mjs > /dev/null
+          node .claude/skills/seodraft/scripts/gate.mjs \
+            src/content/blog/deterministic-seo-gates.mdx \
+            --term "deterministic seo gates" > /dev/null
+          echo "ok: the installed skill runs with no dependencies"

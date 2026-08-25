@@ -17,7 +17,8 @@
     "node": ">=18"
   },
   "scripts": {
-    "test": "vitest run"
+    "test": "vitest run",
+    "check:deps": "node scripts/check-no-runtime-deps.mjs"
   },
   "devDependencies": {
     "vitest": "^3.0.0"

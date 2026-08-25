@@ -1,0 +1,66 @@
+name: Rule proposal
+description: Propose a new gate or audit rule
+labels: [rule proposal]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Rules are cheap to add and expensive to remove, so the design questions
+        come first. The false-positive question below is the one that usually
+        decides whether a rule is worth having.
+
+  - type: input
+    id: name
+    attributes:
+      label: Proposed rule name
+      placeholder: "missing-canonical"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: where
+    attributes:
+      label: Which command
+      options:
+        - gate (blocks a new article)
+        - audit (reports on existing content)
+        - both
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: "`error` only when the content is wrong regardless of anyone's standard. `advisory` when it encodes a standard that reasonable content can predate."
+      options:
+        - error
+        - advisory
+        - error in the gate, advisory in the audit
+    validations:
+      required: true
+
+  - type: textarea
+    id: check
+    attributes:
+      label: The check, stated deterministically
+      description: It must be answerable without a model and without judgment. If it needs taste, it belongs in `skill/reference/write.md`, not in a rule.
+      placeholder: "Frontmatter has no mapped canonical field, and the site's layout does not emit one."
+    validations:
+      required: true
+
+  - type: textarea
+    id: false-positive
+    attributes:
+      label: What a false positive looks like
+      description: Describe legitimate content this rule would wrongly flag. "None" is a valid answer if you can defend it.
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Why it matters for SEO or AEO
+      description: Ideally with a source, or with a measurement from your own site.
+    validations:
+      required: true

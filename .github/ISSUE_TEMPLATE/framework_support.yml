@@ -1,0 +1,43 @@
+name: Framework or harness support
+description: Ask for a static-site framework or an AI harness to be supported
+labels: [support request]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What is missing
+      options:
+        - A static-site framework (detection + content dir)
+        - An AI harness (install target)
+    validations:
+      required: true
+
+  - type: input
+    id: name
+    attributes:
+      label: Name
+      placeholder: "SvelteKit / Zed"
+    validations:
+      required: true
+
+  - type: textarea
+    id: fingerprint
+    attributes:
+      label: How to recognize it
+      description: |
+        For a framework: the config file only it has, where posts live, the file
+        extension, and whether it ships an explicit content schema (that last
+        one matters — a schema declares fields that are absent from every
+        published post when they hold their default).
+
+        For a harness: the folder it reads skills from, and the file layout it
+        expects inside.
+    validations:
+      required: true
+
+  - type: textarea
+    id: sample
+    attributes:
+      label: A real post's frontmatter
+      description: Framework requests only. Field names are exactly what the mapping needs.
+      render: yaml

@@ -171,17 +171,29 @@ estimate; an estimate never overwrites a measurement.
 Credentials go in `DATAFORSEO_LOGIN` / `DATAFORSEO_PASSWORD` or in the
 gitignored `.seodraft/config.local.json`.
 
-## Development
+## Contributing
+
+Issues and pull requests are welcome. Start with
+[CONTRIBUTING.md](CONTRIBUTING.md) — it is short, and it covers the one
+constraint that is easy to break by accident: everything under
+`skill/scripts/` must stay dependency-free, because those scripts run inside
+someone else's harness with no `node_modules` anywhere near them. CI enforces
+it mechanically.
 
 ```bash
 pnpm install
-pnpm test        # 75 tests, 9 suites
+pnpm test                                  # 75 tests, 9 suites
+node scripts/check-no-runtime-deps.mjs     # the dependency guard
 ```
 
-Everything under `skill/scripts/` is dependency-free Node ≥ 18 ESM (`node:fs`,
-`node:path`, global `fetch`) so it runs inside any harness with no install step.
-`fixtures/astro-blog/` is a content repo seeded with a known set of defects that
-the gate and audit tests assert against exactly.
+There is no build step: `skill/` is the product and the installer copies it.
+`fixtures/astro-blog/` is a content repo seeded with a known set of defects
+that the gate and audit tests assert against exactly — it is a test fixture,
+not sample data.
+
+By participating you agree to the [Code of Conduct](CODE_OF_CONDUCT.md). For
+vulnerabilities, see [SECURITY.md](SECURITY.md) — please do not open a public
+issue.
 
 ## Not in v1
 

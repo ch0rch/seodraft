@@ -1,0 +1,64 @@
+name: Bug report
+description: A script, rule or install behaved incorrectly
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Two things answer most reports on their own: your `.seodraft/config.json`
+        and the JSON the script printed. Please include both.
+
+        **Never paste `.seodraft/config.local.json`** — it holds your DataForSEO
+        credentials.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you ran, what you expected, and what you got instead.
+      placeholder: |
+        Ran `/seodraft write` for "target keyword". Expected the gate to pass;
+        it failed `internal-links-min` even though the post has 3 internal links.
+    validations:
+      required: true
+
+  - type: textarea
+    id: config
+    attributes:
+      label: Your .seodraft/config.json
+      description: Redact `siteUrl` if you prefer. The `frontmatter` mapping is the part that matters most.
+      render: json
+    validations:
+      required: true
+
+  - type: textarea
+    id: output
+    attributes:
+      label: Script output
+      description: The full JSON the script printed, plus its exit code.
+      render: json
+    validations:
+      required: true
+
+  - type: input
+    id: framework
+    attributes:
+      label: Framework and file extension
+      placeholder: "Next + Keystatic, .mdoc"
+    validations:
+      required: true
+
+  - type: input
+    id: versions
+    attributes:
+      label: Node version and harness
+      placeholder: "node 22.11.0, Claude Code"
+    validations:
+      required: true
+
+  - type: textarea
+    id: sample
+    attributes:
+      label: A minimal post that reproduces it
+      description: Frontmatter plus the smallest body that still shows the problem. Optional, but it usually turns a two-day issue into a ten-minute one.
+      render: markdown
