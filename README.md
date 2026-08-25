@@ -1,11 +1,12 @@
 # seodraft
 
-**Outrank for your repo, powered by the agent you already pay for.**
+**An SEO/AEO content engine that lives in your repo, powered by the agent you
+already pay for.**
 
-A local-first SEO/AEO content engine. It installs an agent skill plus a set of
-dependency-free Node scripts into the AI coding harness you already run, and
-turns it into a content operation: keyword research, a content calendar, article
-generation, and a deterministic pre-publish gate.
+It installs an agent skill plus a set of dependency-free Node scripts into the
+AI coding harness you already run, and turns it into a content operation:
+keyword research, a content calendar, article generation, and a deterministic
+pre-publish gate.
 
 No SaaS. No model API keys. Your articles are Markdown files in your repo and
 your state is JSON files you can read in a diff.
