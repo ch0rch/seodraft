@@ -12,6 +12,7 @@ export const PROVIDERS = {
   cursor: { harnessDir: ".cursor", label: "Cursor" },
   gemini: { harnessDir: ".gemini", label: "Gemini CLI" },
   opencode: { harnessDir: ".opencode", label: "OpenCode" },
+  pi: { harnessDir: ".pi", label: "Pi" },
 };
 
 export const PROVIDER_IDS = Object.keys(PROVIDERS);

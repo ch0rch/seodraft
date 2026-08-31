@@ -9,10 +9,12 @@ two or three constraints that are easy to break by accident.
 git clone https://github.com/ch0rch/seodraft.git
 cd seodraft
 pnpm install     # vitest is the only dependency, and it is dev-only
-pnpm test        # 75 tests, 9 suites, runs in under a second
+pnpm test        # 81 tests, 10 suites, runs in under a second
 ```
 
 There is no build step. `skill/` is the product; the installer copies it.
+`prompts/` holds Pi prompt templates, declared through the `pi` manifest in
+`package.json` and loaded in place — never copied into a harness.
 
 ## The one hard rule
 

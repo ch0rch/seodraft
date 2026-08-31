@@ -3,6 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { detectProviders, installSkill } from "./install.mjs";
+import { PROVIDER_IDS } from "./providers.mjs";
 import { copyFixture, repoRoot } from "../../tests/helpers.mjs";
 
 let tempRoot = null;
@@ -42,6 +43,28 @@ describe("installer", () => {
     fs.writeFileSync(marker, "locally modified\n");
     installSkill({ providerIds: ["claude"], base: tempRoot, packageRoot: repoRoot });
     expect(fs.readFileSync(marker, "utf8")).not.toBe("locally modified\n");
+  });
+
+  it("ships an identical payload to every provider, pi included", () => {
+    // The skill content is the product; only the harness wrapper folder
+    // differs. A provider that receives a different tree is a bug.
+    tempRoot = copyFixture();
+    const installed = installSkill({ providerIds: PROVIDER_IDS, base: tempRoot, packageRoot: repoRoot });
+    expect(installed).toHaveLength(PROVIDER_IDS.length);
+
+    const tree = (dir) =>
+      fs
+        .readdirSync(dir, { recursive: true })
+        .map((p) => p.split(path.sep).join("/"))
+        .sort();
+    const reference = tree(path.join(tempRoot, ".claude", "skills", "seodraft"));
+    expect(reference).toContain("SKILL.md");
+    // Package-root resources (pi prompt templates) are never part of the skill.
+    expect(reference).not.toContain("prompts");
+
+    for (const { provider, dest } of installed) {
+      expect(tree(dest), provider).toEqual(reference);
+    }
   });
 
   it("detects providers by harness folder presence", () => {
