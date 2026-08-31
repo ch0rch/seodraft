@@ -6,6 +6,35 @@ schemas, and the set of gate and audit rule names — renaming a rule or making
 an advisory into an error is a breaking change, because someone's CI depends on
 the exit code.
 
+## 0.2.0 — 2026-08-31
+
+Pi support. Nothing changes for the harnesses already supported: the skill
+payload the installer copies is byte-identical to 0.1.0.
+
+### Added
+
+- **Native Pi package.** `pi install npm:seodraft` registers the skill from a
+  `pi` manifest in `package.json`. Pi loads it in place, so nothing is copied
+  into your repo and `pi update` keeps it current. Install without a version:
+  a pinned spec is deliberately skipped by `pi update --extensions`.
+- **`/seodraft <command>` prompt template** (`prompts/seodraft.md`), so Pi
+  keeps the same invocation as every other harness instead of only
+  `/skill:seodraft`. It uses `$1` and `${@:2}` and nothing else — released Pi
+  builds do not substitute bash-style defaults like `${1:-status}` and leak the
+  raw token into the prompt.
+- **`pi` installer provider** (`.pi/skills/`), for parity with
+  `--providers=claude,codex,cursor,gemini,opencode`. Use the package **or**
+  this, not both: Pi reports a name collision and loads whichever it finds
+  first. A `.agents/skills/` install from Codex is already visible to Pi.
+
+### Guarantees
+
+- A test asserts every provider receives an identical payload, and that
+  `prompts/` — a package-root resource — never leaks into the copied skill.
+- The tarball smoke test now fails if any `pi` manifest root is missing from
+  the published `files`, which would make Pi load an empty package.
+- 81 tests across 10 suites.
+
 ## 0.1.0 — 2026-08-25
 
 First release. Everything below is new.

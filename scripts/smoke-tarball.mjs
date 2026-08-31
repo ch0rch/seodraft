@@ -55,6 +55,20 @@ try {
     [...shipped].every((entry) => !entry.endsWith(".test.mjs")),
   );
 
+  // Pi loads a package's resources straight out of the install directory, so
+  // a manifest root missing from `files` means `pi install npm:seodraft`
+  // succeeds and registers nothing at all.
+  const piManifest = JSON.parse(fs.readFileSync(path.join(repoRoot, "package.json"), "utf8")).pi;
+  for (const [type, entries] of Object.entries(piManifest)) {
+    for (const entry of entries) {
+      const root = entry.replace(/^\.\//, "");
+      check(
+        `tarball ships the pi ${type} root ${root}`,
+        [...shipped].some((packedPath) => packedPath === root || packedPath.startsWith(`${root}/`)),
+      );
+    }
+  }
+
   // 2. Install the tarball into its own prefix, like npx resolving a version.
   const prefix = path.join(work, "prefix");
   fs.mkdirSync(prefix);

@@ -33,7 +33,7 @@ article, forever. Everything that needs taste stays with you and your agent.
 - Node.js ≥ 18
 - A Markdown/MDX content repo — Astro, Next.js, Hugo and Jekyll are detected
   automatically, and Markdoc/Keystatic (`.mdoc`) works too
-- One of: Claude Code, Codex, Cursor, Gemini CLI, OpenCode
+- One of: Claude Code, Codex, Cursor, Gemini CLI, OpenCode, Pi
 
 ## Install
 
@@ -44,10 +44,10 @@ npx seodraft@latest install
 ```
 
 `install` detects which harness folders exist (`.claude`, `.agents`, `.cursor`,
-`.gemini`, `.opencode`), asks you to confirm, and copies the skill in. Pass
-`--providers=claude,cursor` to skip the prompt, or `--scope=global` to install
-into `~` instead of the project. `update` re-copies over an existing install —
-run it after bumping the package.
+`.gemini`, `.opencode`, `.pi`), asks you to confirm, and copies the skill in.
+Pass `--providers=claude,cursor` to skip the prompt, or `--scope=global` to
+install into `~` instead of the project. `update` re-copies over an existing
+install — run it after bumping the package.
 
 Installing globally works too, and gives you the CLI on `PATH` for CI use:
 
@@ -64,6 +64,25 @@ node /path/to/seodraft/bin/seodraft.mjs install   # from your content repo
 ```
 
 Then open your agent in your content repo and run `/seodraft init`.
+
+### Pi
+
+Pi loads seodraft as a native package, in place — nothing is copied into your
+repo and `pi update` keeps it current:
+
+```bash
+pi install npm:seodraft
+```
+
+Install it **without** a version: a pinned spec (`npm:seodraft@0.2.0`) is
+deliberately skipped by `pi update --extensions`. The package ships the skill
+plus a `/seodraft <command>` prompt template; `/skill:seodraft` works too.
+
+Pick one route per machine — the package **or**
+`seodraft install --providers=pi`. Both at once makes pi report a `seodraft`
+name collision and load only the first one it finds. And if you already
+installed for Codex, pi picks the skill up for free: it reads `.agents/skills/`
+as well.
 
 ## Commands
 
@@ -193,12 +212,15 @@ it mechanically.
 
 ```bash
 pnpm install
-pnpm test                # 75 tests, 9 suites
+pnpm test                # 81 tests, 10 suites
 pnpm check:deps          # the dependency guard
 pnpm smoke               # packs the tarball, installs it, runs it
 ```
 
 There is no build step: `skill/` is the product and the installer copies it.
+`prompts/` is Pi-only: it is loaded straight out of the package and is never
+part of the copied skill.
+
 `fixtures/astro-blog/` is a content repo seeded with a known set of defects
 that the gate and audit tests assert against exactly — it is a test fixture,
 not sample data.

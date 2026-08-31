@@ -1,6 +1,6 @@
 {
   "name": "seodraft",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Local-first SEO/AEO content engine: installs an agent skill + deterministic scripts into your AI coding harness.",
   "keywords": [
     "seo",
@@ -10,7 +10,8 @@
     "mdx",
     "agent-skill",
     "claude-code",
-    "cli"
+    "cli",
+    "pi-package"
   ],
   "homepage": "https://github.com/ch0rch/seodraft#readme",
   "bugs": "https://github.com/ch0rch/seodraft/issues",
@@ -27,10 +28,19 @@
   "bin": {
     "seodraft": "bin/seodraft.mjs"
   },
+  "pi": {
+    "skills": [
+      "./skill"
+    ],
+    "prompts": [
+      "./prompts"
+    ]
+  },
   "files": [
     "bin",
     "src",
     "skill",
+    "prompts",
     "!**/*.test.mjs"
   ],
   "engines": {
